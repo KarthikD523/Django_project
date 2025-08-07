@@ -1,0 +1,24 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/styles.css' %}"> 
+</head>
+<body>
+    <div class="Register">
+        <h1>Register</h1>
+        <form method="POST" action="{%url 'polls:register'%}">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Register</button>
+            {% if form.errors %}
+                <p style="color: red;">Please correct the errors below.</p>
+            {% endif %}
+        </form>
+    </div>
+    
+   
+</body>
+</html>

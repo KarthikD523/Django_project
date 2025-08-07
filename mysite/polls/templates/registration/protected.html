@@ -1,0 +1,18 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link> rel="stylesheet" type="text/css" href="{% static 'styles/style.css' %}">
+</head>
+<body>
+    <div class="Container">
+        <h2>Protected Page</h2>
+        <a href="{% url 'polls:home' %}">home</a>
+      
+    </div>
+    
+   
+</body>
+</html>

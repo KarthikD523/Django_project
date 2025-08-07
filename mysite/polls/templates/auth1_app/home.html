@@ -1,0 +1,22 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/styles.css' %}">
+</head>
+<body>
+    <div class="Container">
+        <h2>Home</h2>
+       <p>Welcome {{request.user.username}}</p>
+       <a href="{% url 'polls:protected' %}">Go to protected page</a>
+       <form action="{% url 'polls:logout' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+       </form>
+    </div>
+    
+   
+</body>
+</html>
