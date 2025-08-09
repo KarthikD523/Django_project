@@ -1,0 +1,60 @@
+{% extends "./navbar.html" %}
+{% block title %}Your Cart - MyShop{% endblock %}
+
+{% block content %}
+<h1>Your Shopping Cart</h1>
+
+{% if cart_items %}
+    <p>You have {{ cart_items|length }} item{{ cart_items|length|pluralize }} in your cart.</p>
+
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th class="right-align">Quantity</th>
+                <th class="right-align">Price</th>
+                <th class="right-align">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td class="right-align">{{ item.quantity }}</td>
+                <td class="right-align">₹{{ item.product.price }}</td>
+                <td class="right-align">₹{{ item.subtotal }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+                <td colspan="3" class="right-align">Total:</td>
+                <td class="right-align">₹{{ total }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+
+<style>
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .cart-table th, .cart-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ccc;
+        text-align: left;
+    }
+    .cart-table th {
+        background-color: #f4f4f4;
+    }
+    .right-align {
+        text-align: right;
+    }
+    .total-row td {
+        font-weight: bold;
+        border-top: 2px solid #000;
+    }
+</style>
+
+{% endblock %}

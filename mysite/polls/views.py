@@ -3,12 +3,13 @@ from django.template import loader
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.views.decorators.http import require_GET,require_POST
 from django.views import View
 from django.contrib.auth.models import User
 from .forms import RegisterForm
 
 from .models import Question
+from .models import Product,Cart,CartItem
 
 # Create your views here.
 from django.http import HttpResponse
@@ -108,4 +109,62 @@ class ProtectedView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'registration/protected.html')
     
-    
+@require_GET
+@login_required  
+def Product_home(request):
+     products_list=[{"id":1,"name":"Product 1","price":100,"description":"Description of Product 1"},
+              {"id":2,"name":"Product 2","price":200,"description":"Description of Product 2"},
+              {"id":3,"name":"Product 3","price":300,"description":"Description of Product 3"},
+              {"id":4,"name":"Product 4","price":400,"description":"Description of Product 4"},
+              {"id":5,"name":"Product 5","price":500,"description":"Description of Product 5"},
+              {"id":6,"name":"Product 6","price":600,"description":"Description of Product 6"},
+              {"id":7,"name":"Product 7","price":700,"description":"Description of Product 7"},
+              {"id":8,"name":"Product 8","price":800,"description":"Description of Product 8"},
+              {"id":9,"name":"Product 9","price":900,"description":"Description of Product 9"},
+              {"id":10,"name":"Product 10","price":1000,"description":"Description of Product 10"}
+              ]
+     products=Product.objects.all()
+     return render(request, 'ecommerce/product_home.html',{'products':products})
+
+@require_GET
+@login_required
+def view_products(request):
+    products_list=[{"id":1,"name":"Product 1","price":100,"description":"Description of Product 1"},
+              {"id":2,"name":"Product 2","price":200,"description":"Description of Product 2"},
+              {"id":3,"name":"Product 3","price":300,"description":"Description of Product 3"},
+              {"id":4,"name":"Product 4","price":400,"description":"Description of Product 4"},
+              {"id":5,"name":"Product 5","price":500,"description":"Description of Product 5"},
+              {"id":6,"name":"Product 6","price":600,"description":"Description of Product 6"},
+              {"id":7,"name":"Product 7","price":700,"description":"Description of Product 7"},
+              {"id":8,"name":"Product 8","price":800,"description":"Description of Product 8"},
+              {"id":9,"name":"Product 9","price":900,"description":"Description of Product 9"},
+              {"id":10,"name":"Product 10","price":1000,"description":"Description of Product 10"}
+              ]
+    products=Product.objects.all()
+    return render(request,'ecommerce/products.html',{'products':products})
+
+@login_required
+def view_cart(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_items = cart.items.select_related('product').all()  # select_related for efficiency
+    return render(request, 'ecommerce/cart.html', {'cart_items': cart_items,'total':cart.total_price()})
+
+
+@require_GET
+def view_product_description(request,product_id):
+    product=Product.objects.get(id=product_id)
+    return render(request,'ecommerce/product_description.html',{'product_description':product.description,'product_id':product_id})
+
+def add_to_cart(request,product_id):
+    if request.method == "POST":
+        product = get_object_or_404(Product, id=product_id)
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        
+        if not created:
+            cart_item.quantity += 1
+        cart_item.save()
+        
+        return redirect('polls:products')
+    else:
+        return HttpResponse("Invalid request method.", status=405)

@@ -14,7 +14,14 @@ urlpatterns = [
     path("accounts/login/", views.login_view, name="login"),
     path("accounts/register/", views.registerView, name="register"),
     path("accounts/logout/", views.logout_view, name="logout"),
-    path("home/", views.home_view, name="home"),
-     path("protected/", views.ProtectedView.as_view(), name="protected")
+    path("home/", views.Product_home, name="home"),
+    path("protected/", views.ProtectedView.as_view(), name="protected"),
+
+
+    path("products/",views.view_products, name="products"),
+    path("cart/", views.view_cart, name="cart"),
+
+    path("product_description/<int:product_id>/", views.view_product_description, name="product_description"),
+    path("addtocart/<int:product_id>/",views.add_to_cart,name="add_to_cart"),
     
 ]
