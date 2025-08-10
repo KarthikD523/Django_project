@@ -29,6 +29,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2)  # allows decimals like 100.50
     description = models.TextField()
+    created_by = models.ForeignKey(User,null=True, on_delete=models.CASCADE) 
 
     def __str__(self):
         return self.name

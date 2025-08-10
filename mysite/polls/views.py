@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.decorators.http import require_GET,require_POST
 from django.views import View
 from django.contrib.auth.models import User
-from .forms import RegisterForm
+from .forms import RegisterForm,AddProductForm
 
 from .models import Question
 from .models import Product,Cart,CartItem
@@ -168,3 +168,22 @@ def add_to_cart(request,product_id):
         return redirect('polls:products')
     else:
         return HttpResponse("Invalid request method.", status=405)
+    
+@login_required
+def add_product(request):
+    if request.method=="POST":
+        form=AddProductForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.created_by = request.user  # set the logged-in user
+            product.save()
+            return redirect('polls:products')
+    else:
+         form=AddProductForm()
+    return render(request,'ecommerce/add_product.html',{'form':form})
+
+
+@login_required
+def my_products(request):
+    products=Product.objects.filter(created_by=request.user)
+    return render(request, 'ecommerce/myproducts.html', {'products': products})
